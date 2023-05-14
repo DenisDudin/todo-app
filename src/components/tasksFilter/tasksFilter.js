@@ -1,21 +1,11 @@
-import { Component } from "react";
-
-class TasksFilter extends Component {
-  render() {
-    return (
-      <ul className="filters">
-        <li>
-          <button class="selected">All</button>
-        </li>
-        <li>
-          <button>Active</button>
-        </li>
-        <li>
-          <button>Completed</button>
-        </li>
-      </ul>
-    );
-  }
-}
+const TasksFilter = ({ id, text, onFilterSelect }) => {
+  return (
+    <li>
+      <button id={id} onClick={onFilterSelect}>
+        {text}
+      </button>
+    </li>
+  );
+};
 
 export default TasksFilter;

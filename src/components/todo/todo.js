@@ -32,7 +32,13 @@ class ToDo extends Component {
         },
       ],
 
-      inputValue: "",
+      filters: [
+        { name: "all", label: "All" },
+        { name: "active", label: "Active" },
+        { name: "completed", label: "Completed" },
+      ],
+
+      filter: "all",
     };
   }
 
@@ -59,19 +65,23 @@ class ToDo extends Component {
     switch (filter) {
       case "all":
         return this.state.taskList;
-        break;
       case "active":
         return this.state.taskList.filter((task) => task.completed === false);
-        break;
       case "completed":
-        return this.state.taskList.filter((task) => task.completed === false);
-        break;
+        return this.state.taskList.filter((task) => task.completed === true);
       default:
         return this.state.taskList;
     }
   };
 
+  onFilterSelect = (filter) => {
+    this.setState({ filter });
+  };
+
   render() {
+    const { filter } = this.state;
+    const visibleTask = this.filteredTasks(filter);
+
     return (
       <div className="todoapp">
         <header className="header">
@@ -80,11 +90,14 @@ class ToDo extends Component {
         </header>
         <section class="main">
           <TaskList
-            tasks={this.state.taskList}
+            tasks={visibleTask}
             deleteTask={this.deleteTask}
             completedTask={this.completedTask}
           />
-          <Footer />
+          <Footer
+            filters={this.state.filters}
+            onFilterSelect={this.onFilterSelect}
+          />
         </section>
       </div>
     );
