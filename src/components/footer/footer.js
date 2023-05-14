@@ -1,22 +1,13 @@
-import { Component } from "react";
 import TasksFilter from "../tasksFilter";
 
-const Footer = ({ filters, onFilterSelect }) => {
+const Footer = ({ filters, onFilterSelect, deleteCompletedTask }) => {
   const btns = filters.map((filter) => {
-    // const activeBtn = props.filter === name;
-    // const clazz = activeBtn ? "btn-light" : "btn-outline-light";
     return (
       <TasksFilter
         key={filter.name}
         text={filter.label}
         onFilterSelect={() => onFilterSelect(filter.name)}
       />
-      // <button type="button"
-      //     className={`btn ${clazz}`}
-      //     key={name}
-      //     onClick={() => props.onFilterSelect(name)}>
-      //     {label}
-      // </button>
     );
   });
 
@@ -24,7 +15,9 @@ const Footer = ({ filters, onFilterSelect }) => {
     <footer className="footer">
       <span className="todo-count">1 items left</span>
       <ul className="filters">{btns}</ul>
-      <button className="clear-completed">Clear completed</button>
+      <button className="clear-completed" onClick={deleteCompletedTask}>
+        Clear completed
+      </button>
     </footer>
   );
 };
