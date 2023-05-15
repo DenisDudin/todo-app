@@ -1,4 +1,6 @@
 import { Component } from "react";
+import PropTypes from "prop-types";
+
 import Task from "../task";
 
 class TaskList extends Component {
@@ -23,5 +25,19 @@ class TaskList extends Component {
     return <ul className="todo-list">{taskList}</ul>;
   }
 }
+
+TaskList.defaultProps = {
+  tasks: [],
+  deleteTask: () => {},
+  completedTask: () => {},
+  editTask: () => {},
+};
+
+TaskList.propTypes = {
+  tasks: PropTypes.arrayOf(PropTypes.object),
+  deleteTask: PropTypes.func,
+  completedTask: PropTypes.func,
+  editTask: PropTypes.func,
+};
 
 export default TaskList;

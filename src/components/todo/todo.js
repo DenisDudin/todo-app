@@ -13,19 +13,19 @@ class ToDo extends Component {
           id: `t${this.taskId++}`,
           completed: false,
           text: "First",
-          created: new Date(2023, 5, 13, 12),
+          created: new Date(2023, 4, 15, 3),
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
           text: "Second",
-          created: new Date(2023, 5, 13, 13),
+          created: new Date(2023, 4, 15, 2),
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
           text: "Third",
-          created: new Date(2023, 5, 13, 14),
+          created: new Date(2023, 4, 15, 1),
         },
       ],
 
@@ -67,7 +67,6 @@ class ToDo extends Component {
   };
 
   editTask = (id, prop) => {
-    console.log(id);
     this.setState(({ taskList }) => ({
       taskList: taskList.map((item) => {
         if (item.id === id) {
@@ -96,7 +95,7 @@ class ToDo extends Component {
       id: `t${this.taskId++}`,
       completed: false,
       text: task,
-      created: new Date(2023, 5, 13, 14),
+      created: new Date(),
     };
     this.setState(({ taskList }) => ({
       taskList: [...taskList, newTask],
@@ -110,6 +109,9 @@ class ToDo extends Component {
   render() {
     const { filter } = this.state;
     const visibleTask = this.filteredTasks(filter);
+    const activeTask = this.state.taskList.reduce((count, task) => {
+      return task.completed === false ? (count += 1) : count;
+    }, 0);
 
     return (
       <div className="todoapp">
@@ -117,7 +119,7 @@ class ToDo extends Component {
           <h1>todos</h1>
           <NewTaskForm addNewTask={this.addNewTask} />
         </header>
-        <section class="main">
+        <section className="main">
           <TaskList
             tasks={visibleTask}
             deleteTask={this.deleteTask}
@@ -125,6 +127,7 @@ class ToDo extends Component {
             editTask={this.editTask}
           />
           <Footer
+            activeTask={activeTask}
             filters={this.state.filters}
             onFilterSelect={this.onFilterSelect}
             deleteCompletedTask={this.deleteCompletedTask}

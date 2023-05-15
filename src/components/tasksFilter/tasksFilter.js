@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 const TasksFilter = ({ id, text, onFilterSelect }) => {
   return (
     <li>
@@ -6,6 +8,17 @@ const TasksFilter = ({ id, text, onFilterSelect }) => {
       </button>
     </li>
   );
+};
+
+TasksFilter.defaultProps = {
+  key: "",
+  text: "",
+  onFilterSelect: () => {},
+};
+
+TasksFilter.propTypes = {
+  text: PropTypes.string,
+  onFilterSelect: PropTypes.func,
 };
 
 export default TasksFilter;

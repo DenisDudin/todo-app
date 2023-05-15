@@ -1,4 +1,5 @@
 import { Component } from "react";
+import PropTypes from "prop-types";
 
 class NewTaskForm extends Component {
   constructor(props) {
@@ -29,10 +30,17 @@ class NewTaskForm extends Component {
         value={this.state.inputValue}
         onChange={this.onValueChange}
         onKeyDown={this.onEditFieldKeyDown}
-        autofocus
       />
     );
   }
 }
+
+NewTaskForm.defaultProps = {
+  props: () => {},
+};
+
+NewTaskForm.propTypes = {
+  props: PropTypes.func,
+};
 
 export default NewTaskForm;
