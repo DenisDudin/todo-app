@@ -1,7 +1,7 @@
-import { Component } from "react";
-import NewTaskForm from "../newTaskForm";
-import TaskList from "../taskList";
-import Footer from "../footer";
+import NewTaskForm from '../newTaskForm';
+import TaskList from '../taskList';
+import Footer from '../footer';
+import { Component } from 'react';
 
 class ToDo extends Component {
   constructor(props) {
@@ -12,47 +12,43 @@ class ToDo extends Component {
         {
           id: `t${this.taskId++}`,
           completed: false,
-          text: "First",
+          text: 'First',
           created: new Date(2023, 4, 15, 3),
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
-          text: "Second",
+          text: 'Second',
           created: new Date(2023, 4, 15, 2),
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
-          text: "Third",
+          text: 'Third',
           created: new Date(2023, 4, 15, 1),
         },
       ],
 
       filters: [
-        { name: "all", label: "All" },
-        { name: "active", label: "Active" },
-        { name: "completed", label: "Completed" },
+        { name: 'all', label: 'All' },
+        { name: 'active', label: 'Active' },
+        { name: 'completed', label: 'Completed' },
       ],
 
-      filter: "all",
+      filter: 'all',
     };
   }
 
   deleteTask = (id) => {
-    this.setState(({ taskList }) => {
-      return {
-        taskList: taskList.filter((item) => item.id !== id),
-      };
-    });
+    this.setState(({ taskList }) => ({
+      taskList: taskList.filter((item) => item.id !== id),
+    }));
   };
 
   deleteCompletedTask = () => {
-    this.setState(({ taskList }) => {
-      return {
-        taskList: taskList.filter((item) => !item.completed),
-      };
-    });
+    this.setState(({ taskList }) => ({
+      taskList: taskList.filter((item) => !item.completed),
+    }));
   };
 
   completedTask = (id, prop) => {
@@ -78,15 +74,16 @@ class ToDo extends Component {
   };
 
   filteredTasks = (filter) => {
+    const { taskList } = this.state;
     switch (filter) {
-      case "all":
-        return this.state.taskList;
-      case "active":
-        return this.state.taskList.filter((task) => task.completed === false);
-      case "completed":
-        return this.state.taskList.filter((task) => task.completed === true);
+      case 'all':
+        return taskList;
+      case 'active':
+        return taskList.filter((task) => task.completed === false);
+      case 'completed':
+        return taskList.filter((task) => task.completed === true);
       default:
-        return this.state.taskList;
+        return taskList;
     }
   };
 
@@ -107,19 +104,20 @@ class ToDo extends Component {
   };
 
   render() {
-    const { filter } = this.state;
+    const { filter, taskList, filters } = this.state;
     const visibleTask = this.filteredTasks(filter);
-    const activeTask = this.state.taskList.reduce((count, task) => {
-      return task.completed === false ? (count += 1) : count;
-    }, 0);
+
+    /* eslint no-param-reassign: 0 */
+    const activeTask = taskList.reduce((count, task) => (task.completed === false ? (count += 1) : count), 0);
+    /* eslint no-param-reassign: 0 */
 
     return (
-      <div className="todoapp">
-        <header className="header">
+      <div className='todoapp'>
+        <header className='header'>
           <h1>todos</h1>
           <NewTaskForm addNewTask={this.addNewTask} />
         </header>
-        <section className="main">
+        <section className='main'>
           <TaskList
             tasks={visibleTask}
             deleteTask={this.deleteTask}
@@ -128,7 +126,7 @@ class ToDo extends Component {
           />
           <Footer
             activeTask={activeTask}
-            filters={this.state.filters}
+            filters={filters}
             onFilterSelect={this.onFilterSelect}
             deleteCompletedTask={this.deleteCompletedTask}
           />

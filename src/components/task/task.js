@@ -1,6 +1,7 @@
-import { Component } from "react";
-import { formatDistanceToNow } from "date-fns";
-import PropTypes from "prop-types";
+import { Component } from 'react';
+import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types';
+
 class Task extends Component {
   constructor(props) {
     super(props);
@@ -11,15 +12,18 @@ class Task extends Component {
   }
 
   onEditFieldKeyDown = (e) => {
+    const { text: newText } = this.state;
+    const { task, editTask } = this.props;
+
     switch (e.key) {
-      case "Escape":
+      case 'Escape':
         this.setState({
-          text: this.props.task.text,
+          text: task.text,
           editing: false,
         });
         break;
-      case "Enter":
-        this.props.editTask(this.props.task.id, this.state.text);
+      case 'Enter':
+        editTask(task.id, newText);
         this.setState({
           editing: false,
         });
@@ -41,44 +45,36 @@ class Task extends Component {
     });
   };
 
-  setDate = (date) =>
-    formatDistanceToNow(date, { addSuffix: true, includeSeconds: true });
+  /* eslint-disable class-methods-use-this */
+  setDate = (date) => formatDistanceToNow(date, { addSuffix: true, includeSeconds: true });
+  /* eslint-enable class-methods-use-this */
 
   render() {
     const { id, task, deleteTask, completedTask } = this.props;
+    const { text, editing } = this.state;
+    /* eslint no-nested-ternary:off */
+    const classTask = editing ? 'editing' : task.completed ? 'completed' : '';
+    /* eslint no-nested-ternary:off */
 
     return (
-      <li
-        id={id}
-        className={
-          this.state.editing ? "editing" : task.completed ? "completed" : ""
-        }
-      >
-        <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            data-completed="completed"
-            onChange={completedTask}
-          />
+      <li id={id} className={classTask}>
+        <div className='view'>
+          <input className='toggle' type='checkbox' data-completed='completed' onChange={completedTask} />
           <label>
-            <span className="description">{this.state.text}</span>
-            <span className="created">
-              created {this.setDate(task.created)} ago
-            </span>
+            <span className='description'>{text}</span>
+            <span className='created'>created {this.setDate(task.created)} ago</span>
           </label>
-          <button className="icon icon-edit" onClick={this.onEdit}></button>
-          <button className="icon icon-destroy" onClick={deleteTask}></button>
+          <button type='button' className='icon icon-edit' onClick={this.onEdit} />
+          <button type='button' className='icon icon-destroy' onClick={deleteTask} />
         </div>
-        {this.state.editing ? (
+        {editing ? (
           <input
-            type="text"
-            className="edit"
-            value={this.state.text}
+            type='text'
+            className='edit'
+            value={text}
             onChange={this.onValueChange}
             defaultValue={this.text}
             onKeyDown={this.onEditFieldKeyDown}
-            autoFocus={true}
           />
         ) : null}
       </li>
@@ -94,7 +90,7 @@ Task.defaultProps = {
 };
 
 Task.propTypes = {
-  task: PropTypes.object,
+  task: PropTypes.shape({}),
   deleteTask: PropTypes.func,
   completedTask: PropTypes.func,
   editTask: PropTypes.func,

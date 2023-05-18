@@ -1,11 +1,11 @@
-import { Component } from "react";
-import PropTypes from "prop-types";
+import { Component } from 'react';
+// import PropTypes from 'prop-types';
 
 class NewTaskForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inputValue: "",
+      inputValue: '',
     };
   }
 
@@ -16,18 +16,22 @@ class NewTaskForm extends Component {
   };
 
   onEditFieldKeyDown = (e) => {
-    if (e.key === "Enter") {
-      this.props.addNewTask(this.state.inputValue);
-      this.state.inputValue = "";
+    const { inputValue } = this.state;
+    const { addNewTask } = this.props;
+
+    if (e.key === 'Enter') {
+      addNewTask(inputValue);
+      this.state.inputValue = '';
     }
   };
 
   render() {
+    const { inputValue } = this.state;
     return (
       <input
-        className="new-todo"
-        placeholder="What needs to be done?"
-        value={this.state.inputValue}
+        className='new-todo'
+        placeholder='What needs to be done?'
+        value={inputValue}
         onChange={this.onValueChange}
         onKeyDown={this.onEditFieldKeyDown}
       />
@@ -39,8 +43,8 @@ NewTaskForm.defaultProps = {
   props: () => {},
 };
 
-NewTaskForm.propTypes = {
-  props: PropTypes.func,
-};
+// NewTaskForm.propTypes = {
+//   props: PropTypes.func,
+// };
 
 export default NewTaskForm;

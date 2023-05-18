@@ -1,22 +1,23 @@
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 
-const TasksFilter = ({ id, text, onFilterSelect }) => {
+function TasksFilter({ id, text, onFilterSelect }) {
   return (
     <li>
-      <button id={id} onClick={onFilterSelect}>
+      <button type='button' id={id} onClick={onFilterSelect}>
         {text}
       </button>
     </li>
   );
-};
+}
 
 TasksFilter.defaultProps = {
-  key: "",
-  text: "",
+  id: '',
+  text: '',
   onFilterSelect: () => {},
 };
 
 TasksFilter.propTypes = {
+  id: PropTypes.string,
   text: PropTypes.string,
   onFilterSelect: PropTypes.func,
 };

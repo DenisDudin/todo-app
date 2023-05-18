@@ -1,9 +1,13 @@
-import { Component } from "react";
-import PropTypes from "prop-types";
-
-import Task from "../task";
+import Task from '../task';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class TaskList extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   render() {
     const { tasks, deleteTask, completedTask, editTask } = this.props;
 
@@ -14,15 +18,13 @@ class TaskList extends Component {
           key={id}
           task={task}
           deleteTask={() => deleteTask(id)}
-          completedTask={(e) =>
-            completedTask(id, e.currentTarget.getAttribute("data-completed"))
-          }
+          completedTask={(e) => completedTask(id, e.currentTarget.getAttribute('data-completed'))}
           editTask={editTask}
         />
       );
     });
 
-    return <ul className="todo-list">{taskList}</ul>;
+    return <ul className='todo-list'>{taskList}</ul>;
   }
 }
 
@@ -34,7 +36,7 @@ TaskList.defaultProps = {
 };
 
 TaskList.propTypes = {
-  tasks: PropTypes.arrayOf(PropTypes.object),
+  tasks: PropTypes.arrayOf(PropTypes.shape({})),
   deleteTask: PropTypes.func,
   completedTask: PropTypes.func,
   editTask: PropTypes.func,
