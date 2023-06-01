@@ -61,8 +61,13 @@ class Task extends Component {
         <div className='view'>
           <input className='toggle' type='checkbox' data-completed='completed' onChange={completedTask} />
           <label>
-            <span className='description'>{text}</span>
-            <span className='created'>created {this.setDate(task.created)} ago</span>
+            <span className='title'>{text}</span>
+            <span className='description'>
+              <button type='button' className='icon icon-play' />
+              <button type='button' className='icon icon-pause' />
+              12:25
+            </span>
+            <span className='description'>created {this.setDate(task.created)} ago</span>
           </label>
           <button type='button' className='icon icon-edit' onClick={this.onEdit} />
           <button type='button' className='icon icon-destroy' onClick={deleteTask} />

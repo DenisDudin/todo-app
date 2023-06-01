@@ -28,13 +28,17 @@ class NewTaskForm extends Component {
   render() {
     const { inputValue } = this.state;
     return (
-      <input
-        className='new-todo'
-        placeholder='What needs to be done?'
-        value={inputValue}
-        onChange={this.onValueChange}
-        onKeyDown={this.onEditFieldKeyDown}
-      />
+      <form className='new-todo-form'>
+        <input
+          className='new-todo'
+          placeholder='Task'
+          value={inputValue}
+          onChange={this.onValueChange}
+          onKeyDown={this.onEditFieldKeyDown}
+        />
+        <input className='new-todo-form__timer' placeholder='Min' />
+        <input className='new-todo-form__timer' placeholder='Sec' />
+      </form>
     );
   }
 }
