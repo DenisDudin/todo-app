@@ -14,18 +14,27 @@ class ToDo extends Component {
           completed: false,
           text: 'First',
           created: new Date(2023, 4, 15, 3),
+          minute: 11,
+          second: 35,
+          onTimer: false,
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
           text: 'Second',
           created: new Date(2023, 4, 15, 2),
+          minute: 9,
+          second: 0,
+          onTimer: false,
         },
         {
           id: `t${this.taskId++}`,
           completed: false,
           text: 'Third',
           created: new Date(2023, 4, 15, 1),
+          minute: 0,
+          second: 3,
+          onTimer: false,
         },
       ],
 
@@ -36,7 +45,15 @@ class ToDo extends Component {
       ],
 
       filter: 'all',
+      timer: false,
     };
+  }
+
+  componentDidMount() {
+    const { timer } = this.state;
+    if (!timer) {
+      this.state.timer = setInterval(this.changeTime, 1000);
+    }
   }
 
   deleteTask = (id) => {
@@ -54,7 +71,7 @@ class ToDo extends Component {
   completedTask = (id, prop) => {
     this.setState(({ taskList }) => ({
       taskList: taskList.map((item) => {
-        if (item.id === id) {
+        if (item.id === id && item.seconds !== 0 && item.minute !== 0) {
           return { ...item, [prop]: !item[prop] };
         }
         return item;
@@ -66,7 +83,7 @@ class ToDo extends Component {
     this.setState(({ taskList }) => ({
       taskList: taskList.map((item) => {
         if (item.id === id) {
-          return { ...item, text: prop, editing: true };
+          return { ...item, text: prop.input, editing: true };
         }
         return item;
       }),
@@ -91,8 +108,11 @@ class ToDo extends Component {
     const newTask = {
       id: `t${this.taskId++}`,
       completed: false,
-      text: task,
+      text: task.inputValue,
       created: new Date(),
+      minute: Number(task.minute),
+      second: Number(task.second),
+      onTimer: false,
     };
     this.setState(({ taskList }) => ({
       taskList: [...taskList, newTask],
@@ -101,6 +121,55 @@ class ToDo extends Component {
 
   onFilterSelect = (filter) => {
     this.setState({ filter });
+  };
+
+  toggleTimer = (id, сondition) => {
+    this.setState(({ taskList }) => ({
+      taskList: taskList.map((item) => {
+        if (item.id === id) {
+          return { ...item, onTimer: сondition };
+        }
+        return item;
+      }),
+    }));
+  };
+
+  onPlayTimer = (id) => {
+    this.toggleTimer(id, true);
+  };
+
+  onPauseTimer = (id) => {
+    this.toggleTimer(id, false);
+  };
+
+  changeTime = () => {
+    this.setState(({ taskList }) => ({
+      taskList: taskList.map((item) => {
+        const { second: secondPrev, minute: minutePrev } = item;
+
+        if (item.onTimer === true && item.completed === false) {
+          let second = secondPrev;
+          let minute = minutePrev;
+          let completed = false;
+          let onTimer = true;
+
+          if (second === 0 && minute === 0) {
+            completed = true;
+            onTimer = false;
+          }
+          if (item.second > 0) {
+            second -= 1;
+          } else if (item.minute > 0) {
+            second = 59;
+            minute -= 1;
+          }
+
+          return { ...item, minute, second, completed, onTimer };
+        }
+
+        return item;
+      }),
+    }));
   };
 
   render() {
@@ -123,6 +192,8 @@ class ToDo extends Component {
             deleteTask={this.deleteTask}
             completedTask={this.completedTask}
             editTask={this.editTask}
+            onPlayTimer={this.onPlayTimer}
+            onPauseTimer={this.onPauseTimer}
           />
           <Footer
             activeTask={activeTask}

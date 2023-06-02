@@ -50,8 +50,9 @@ class Task extends Component {
   /* eslint-enable class-methods-use-this */
 
   render() {
-    const { id, task, deleteTask, completedTask } = this.props;
+    const { id, task, deleteTask, completedTask, onPlayTimer, onPauseTimer } = this.props;
     const { text, editing } = this.state;
+    const { created, minute, second } = task;
     /* eslint no-nested-ternary:off */
     const classTask = editing ? 'editing' : task.completed ? 'completed' : '';
     /* eslint no-nested-ternary:off */
@@ -63,11 +64,11 @@ class Task extends Component {
           <label>
             <span className='title'>{text}</span>
             <span className='description'>
-              <button type='button' className='icon icon-play' />
-              <button type='button' className='icon icon-pause' />
-              12:25
+              <button type='button' onClick={onPlayTimer} className='icon icon-play' />
+              <button type='button' onClick={onPauseTimer} className='icon icon-pause' />
+              {minute}:{second}
             </span>
-            <span className='description'>created {this.setDate(task.created)} ago</span>
+            <span className='description'>created {this.setDate(created)} ago</span>
           </label>
           <button type='button' className='icon icon-edit' onClick={this.onEdit} />
           <button type='button' className='icon icon-destroy' onClick={deleteTask} />

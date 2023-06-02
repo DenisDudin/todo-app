@@ -9,7 +9,7 @@ class TaskList extends Component {
   }
 
   render() {
-    const { tasks, deleteTask, completedTask, editTask } = this.props;
+    const { tasks, deleteTask, completedTask, editTask, onPlayTimer, onPauseTimer } = this.props;
 
     const taskList = tasks.map((task) => {
       const { id } = task;
@@ -20,6 +20,8 @@ class TaskList extends Component {
           deleteTask={() => deleteTask(id)}
           completedTask={(e) => completedTask(id, e.currentTarget.getAttribute('data-completed'))}
           editTask={editTask}
+          onPlayTimer={() => onPlayTimer(id)}
+          onPauseTimer={() => onPauseTimer(id)}
         />
       );
     });

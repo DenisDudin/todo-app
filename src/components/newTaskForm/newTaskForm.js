@@ -6,38 +6,56 @@ class NewTaskForm extends Component {
     super(props);
     this.state = {
       inputValue: '',
+      minute: '',
+      second: '',
     };
   }
 
   onValueChange = (e) => {
     this.setState({
-      inputValue: e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
   onEditFieldKeyDown = (e) => {
-    const { inputValue } = this.state;
     const { addNewTask } = this.props;
 
     if (e.key === 'Enter') {
-      addNewTask(inputValue);
+      addNewTask(this.state);
       this.state.inputValue = '';
+      this.state.minute = '';
+      this.state.second = '';
     }
   };
 
   render() {
-    const { inputValue } = this.state;
+    const { inputValue, minute, second } = this.state;
     return (
       <form className='new-todo-form'>
         <input
+          name='inputValue'
           className='new-todo'
           placeholder='Task'
           value={inputValue}
           onChange={this.onValueChange}
           onKeyDown={this.onEditFieldKeyDown}
         />
-        <input className='new-todo-form__timer' placeholder='Min' />
-        <input className='new-todo-form__timer' placeholder='Sec' />
+        <input
+          name='minute'
+          className='new-todo-form__timer'
+          placeholder='Min'
+          value={minute}
+          onChange={this.onValueChange}
+          onKeyDown={this.onEditFieldKeyDown}
+        />
+        <input
+          name='second'
+          className='new-todo-form__timer'
+          placeholder='Sec'
+          value={second}
+          onChange={this.onValueChange}
+          onKeyDown={this.onEditFieldKeyDown}
+        />
       </form>
     );
   }

@@ -24,6 +24,7 @@
     "jsx-a11y/control-has-associated-label": "off",
     "react/react-in-jsx-scope": "off",
     "react/prop-types": 0,
+    "react/no-unused-state": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "prettier/prettier": "error",
     "linebreak-style": [0, "unix"],
