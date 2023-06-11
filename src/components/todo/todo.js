@@ -10,7 +10,6 @@ function ToDo() {
     { name: 'active', label: 'Active' },
     { name: 'completed', label: 'Completed' },
   ];
-  const timer = useRef(false);
   const [filter, setFilter] = useState('all');
   const [taskList, setTaskList] = useState([
     {
@@ -32,6 +31,7 @@ function ToDo() {
       onTimer: false,
     },
   ]);
+  const timer = useRef();
 
   const deleteTask = (id) => {
     setTaskList(taskList.filter((item) => item.id !== id));
@@ -55,9 +55,8 @@ function ToDo() {
   const editTask = (id, prop) => {
     setTaskList(
       taskList.map((item) => {
-        console.log(prop);
         if (item.id === id) {
-          return { ...item, text: prop.input };
+          return { ...item, text: prop };
         }
         return item;
       })
@@ -98,7 +97,6 @@ function ToDo() {
   const toggleTimer = (id, сondition) => {
     setTaskList(
       taskList.map((item) => {
-        console.log(item.id === id);
         if (item.id === id) {
           return { ...item, onTimer: сondition };
         }
@@ -115,44 +113,51 @@ function ToDo() {
     toggleTimer(id, false);
   };
 
-  // const changeTime = () => {
-  //   setTaskList(
-  //     taskList.map((item) => {
-  //       const { second: secondPrev, minute: minutePrev } = item;
+  const changeTime = () => {
+    setTaskList(
+      taskList.map((item) => {
+        const { second: secondPrev, minute: minutePrev } = item;
 
-  //       console.log(item.onTimer, item.completed);
-  //       if (item.onTimer === true && item.completed === false) {
-  //         let second = secondPrev;
-  //         let minute = minutePrev;
-  //         let completed = false;
-  //         let onTimer = true;
+        if (item.onTimer === true && item.completed === false) {
+          let second = secondPrev;
+          let minute = minutePrev;
+          let completed = false;
+          let onTimer = true;
 
-  //         if (second === 0 && minute === 0) {
-  //           completed = true;
-  //           onTimer = false;
-  //         }
-  //         if (item.second > 0) {
-  //           second -= 1;
-  //         } else if (item.minute > 0) {
-  //           second = 59;
-  //           minute -= 1;
-  //         }
+          if (second === 0 && minute === 0) {
+            completed = true;
+            onTimer = false;
+          }
+          if (item.second > 0) {
+            second -= 1;
+          } else if (item.minute > 0) {
+            second = 59;
+            minute -= 1;
+          }
 
-  //         return { ...item, minute, second, completed, onTimer };
-  //       }
+          return { ...item, minute, second, completed, onTimer };
+        }
 
-  //       return item;
-  //     })
-  //   );
-  // };
+        return item;
+      })
+    );
+  };
+
+  function callback() {
+    changeTime();
+  }
 
   useEffect(() => {
-    if (!timer.current) {
-      console.log(1);
-      // timer.current = true;
-      // setInterval(changeTime, 1000);
+    timer.current = callback;
+  });
+
+  useEffect(() => {
+    function tick() {
+      timer.current();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    const interval = setInterval(tick, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   const visibleTask = filteredTasks(filter);

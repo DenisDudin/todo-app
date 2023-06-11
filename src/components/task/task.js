@@ -50,7 +50,6 @@ function Task({ id, task, deleteTask, completedTask, onPlayTimer, onPauseTimer, 
         <input
           type='text'
           className='edit'
-          value={text}
           onChange={(e) => setText(e.target.value)}
           defaultValue={text}
           onKeyDown={onEditFieldKeyDown}
