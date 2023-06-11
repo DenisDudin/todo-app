@@ -1,91 +1,63 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import PropTypes from 'prop-types';
 
-class Task extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      text: props.task.text,
-      editing: false,
-    };
-  }
+function Task({ id, task, deleteTask, completedTask, onPlayTimer, onPauseTimer, editTask }) {
+  const [text, setText] = useState(task.text);
+  const [editing, setEditing] = useState(false);
 
-  onEditFieldKeyDown = (e) => {
-    const { text: newText } = this.state;
-    const { task, editTask } = this.props;
-
+  const onEditFieldKeyDown = (e) => {
     switch (e.key) {
       case 'Escape':
-        this.setState({
-          text: task.text,
-          editing: false,
-        });
+        setText(task.text);
+        setEditing(false);
         break;
       case 'Enter':
-        editTask(task.id, newText);
-        this.setState({
-          editing: false,
-        });
+        editTask(task.id, text);
+        setEditing(false);
         break;
       default:
         break;
     }
   };
 
-  onEdit = () => {
-    this.setState({
-      editing: true,
-    });
-  };
-
-  onValueChange = (e) => {
-    this.setState({
-      text: e.target.value,
-    });
-  };
-
   /* eslint-disable class-methods-use-this */
-  setDate = (date) => formatDistanceToNow(date, { addSuffix: true, includeSeconds: true });
+  const setDate = (date) => formatDistanceToNow(date, { addSuffix: true, includeSeconds: true });
   /* eslint-enable class-methods-use-this */
 
-  render() {
-    const { id, task, deleteTask, completedTask, onPlayTimer, onPauseTimer } = this.props;
-    const { text, editing } = this.state;
-    const { created, minute, second } = task;
-    /* eslint no-nested-ternary:off */
-    const classTask = editing ? 'editing' : task.completed ? 'completed' : '';
-    /* eslint no-nested-ternary:off */
+  const { created, minute, second } = task;
+  /* eslint no-nested-ternary:off */
+  const classTask = editing ? 'editing' : task.completed ? 'completed' : '';
+  /* eslint no-nested-ternary:off */
 
-    return (
-      <li id={id} className={classTask}>
-        <div className='view'>
-          <input className='toggle' type='checkbox' data-completed='completed' onChange={completedTask} />
-          <label>
-            <span className='title'>{text}</span>
-            <span className='description'>
-              <button type='button' onClick={onPlayTimer} className='icon icon-play' />
-              <button type='button' onClick={onPauseTimer} className='icon icon-pause' />
-              {minute}:{second}
-            </span>
-            <span className='description'>created {this.setDate(created)} ago</span>
-          </label>
-          <button type='button' className='icon icon-edit' onClick={this.onEdit} />
-          <button type='button' className='icon icon-destroy' onClick={deleteTask} />
-        </div>
-        {editing ? (
-          <input
-            type='text'
-            className='edit'
-            value={text}
-            onChange={this.onValueChange}
-            defaultValue={this.text}
-            onKeyDown={this.onEditFieldKeyDown}
-          />
-        ) : null}
-      </li>
-    );
-  }
+  return (
+    <li id={id} className={classTask}>
+      <div className='view'>
+        <input className='toggle' type='checkbox' data-completed='completed' onChange={completedTask} />
+        <label>
+          <span className='title'>{text}</span>
+          <span className='description'>
+            <button type='button' onClick={onPlayTimer} className='icon icon-play' />
+            <button type='button' onClick={onPauseTimer} className='icon icon-pause' />
+            {minute}:{second}
+          </span>
+          <span className='description'>created {setDate(created)} ago</span>
+        </label>
+        <button type='button' className='icon icon-edit' onClick={() => setEditing(true)} />
+        <button type='button' className='icon icon-destroy' onClick={deleteTask} />
+      </div>
+      {editing ? (
+        <input
+          type='text'
+          className='edit'
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          defaultValue={text}
+          onKeyDown={onEditFieldKeyDown}
+        />
+      ) : null}
+    </li>
+  );
 }
 
 Task.defaultProps = {

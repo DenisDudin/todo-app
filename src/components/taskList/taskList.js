@@ -1,33 +1,25 @@
 import Task from '../task';
-import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class TaskList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+function TaskList(props) {
+  const { tasks, deleteTask, completedTask, editTask, onPlayTimer, onPauseTimer } = props;
 
-  render() {
-    const { tasks, deleteTask, completedTask, editTask, onPlayTimer, onPauseTimer } = this.props;
+  const taskList = tasks.map((task) => {
+    const { id } = task;
+    return (
+      <Task
+        key={id}
+        task={task}
+        deleteTask={() => deleteTask(id)}
+        completedTask={(e) => completedTask(id, e.currentTarget.getAttribute('data-completed'))}
+        editTask={editTask}
+        onPlayTimer={() => onPlayTimer(id)}
+        onPauseTimer={() => onPauseTimer(id)}
+      />
+    );
+  });
 
-    const taskList = tasks.map((task) => {
-      const { id } = task;
-      return (
-        <Task
-          key={id}
-          task={task}
-          deleteTask={() => deleteTask(id)}
-          completedTask={(e) => completedTask(id, e.currentTarget.getAttribute('data-completed'))}
-          editTask={editTask}
-          onPlayTimer={() => onPlayTimer(id)}
-          onPauseTimer={() => onPauseTimer(id)}
-        />
-      );
-    });
-
-    return <ul className='todo-list'>{taskList}</ul>;
-  }
+  return <ul className='todo-list'>{taskList}</ul>;
 }
 
 TaskList.defaultProps = {

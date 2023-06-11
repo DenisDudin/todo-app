@@ -1,98 +1,71 @@
 import NewTaskForm from '../newTaskForm';
 import TaskList from '../taskList';
 import Footer from '../footer';
-import { Component } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-class ToDo extends Component {
-  constructor(props) {
-    super(props);
-    this.taskId = 1;
-    this.state = {
-      taskList: [
-        {
-          id: `t${this.taskId++}`,
-          completed: false,
-          text: 'First',
-          created: new Date(2023, 4, 15, 3),
-          minute: 11,
-          second: 35,
-          onTimer: false,
-        },
-        {
-          id: `t${this.taskId++}`,
-          completed: false,
-          text: 'Second',
-          created: new Date(2023, 4, 15, 2),
-          minute: 9,
-          second: 0,
-          onTimer: false,
-        },
-        {
-          id: `t${this.taskId++}`,
-          completed: false,
-          text: 'Third',
-          created: new Date(2023, 4, 15, 1),
-          minute: 0,
-          second: 3,
-          onTimer: false,
-        },
-      ],
+function ToDo() {
+  const [taskId, setTaskId] = useState(3);
+  const filters = [
+    { name: 'all', label: 'All' },
+    { name: 'active', label: 'Active' },
+    { name: 'completed', label: 'Completed' },
+  ];
+  const timer = useRef(false);
+  const [filter, setFilter] = useState('all');
+  const [taskList, setTaskList] = useState([
+    {
+      id: 't1',
+      completed: false,
+      text: 'First',
+      created: new Date(2023, 4, 15, 3),
+      minute: 11,
+      second: 35,
+      onTimer: false,
+    },
+    {
+      id: 't2',
+      completed: false,
+      text: 'Second',
+      created: new Date(2023, 4, 15, 2),
+      minute: 0,
+      second: 3,
+      onTimer: false,
+    },
+  ]);
 
-      filters: [
-        { name: 'all', label: 'All' },
-        { name: 'active', label: 'Active' },
-        { name: 'completed', label: 'Completed' },
-      ],
-
-      filter: 'all',
-      timer: false,
-    };
-  }
-
-  componentDidMount() {
-    const { timer } = this.state;
-    if (!timer) {
-      this.state.timer = setInterval(this.changeTime, 1000);
-    }
-  }
-
-  deleteTask = (id) => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.filter((item) => item.id !== id),
-    }));
+  const deleteTask = (id) => {
+    setTaskList(taskList.filter((item) => item.id !== id));
   };
 
-  deleteCompletedTask = () => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.filter((item) => !item.completed),
-    }));
+  const deleteCompletedTask = () => {
+    setTaskList(taskList.filter((item) => !item.completed));
   };
 
-  completedTask = (id, prop) => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.map((item) => {
-        if (item.id === id && item.seconds !== 0 && item.minute !== 0) {
+  const completedTask = (id, prop) => {
+    setTaskList(
+      taskList.map((item) => {
+        if (item.id === id && (item.seconds !== 0 || item.minute !== 0)) {
           return { ...item, [prop]: !item[prop] };
         }
         return item;
-      }),
-    }));
+      })
+    );
   };
 
-  editTask = (id, prop) => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.map((item) => {
+  const editTask = (id, prop) => {
+    setTaskList(
+      taskList.map((item) => {
+        console.log(prop);
         if (item.id === id) {
-          return { ...item, text: prop.input, editing: true };
+          return { ...item, text: prop.input };
         }
         return item;
-      }),
-    }));
+      })
+    );
   };
 
-  filteredTasks = (filter) => {
-    const { taskList } = this.state;
-    switch (filter) {
+  const filteredTasks = (filterTask) => {
+    switch (filterTask) {
       case 'all':
         return taskList;
       case 'active':
@@ -104,9 +77,10 @@ class ToDo extends Component {
     }
   };
 
-  addNewTask = (task) => {
+  const addNewTask = (task) => {
+    setTaskId(taskId + 1);
     const newTask = {
-      id: `t${this.taskId++}`,
+      id: `t${taskId}`,
       completed: false,
       text: task.inputValue,
       created: new Date(),
@@ -114,97 +88,102 @@ class ToDo extends Component {
       second: Number(task.second),
       onTimer: false,
     };
-    this.setState(({ taskList }) => ({
-      taskList: [...taskList, newTask],
-    }));
+    setTaskList([...taskList, newTask]);
   };
 
-  onFilterSelect = (filter) => {
-    this.setState({ filter });
+  const onFilterSelect = (filterTask) => {
+    setFilter(filterTask);
   };
 
-  toggleTimer = (id, сondition) => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.map((item) => {
+  const toggleTimer = (id, сondition) => {
+    setTaskList(
+      taskList.map((item) => {
+        console.log(item.id === id);
         if (item.id === id) {
           return { ...item, onTimer: сondition };
         }
         return item;
-      }),
-    }));
-  };
-
-  onPlayTimer = (id) => {
-    this.toggleTimer(id, true);
-  };
-
-  onPauseTimer = (id) => {
-    this.toggleTimer(id, false);
-  };
-
-  changeTime = () => {
-    this.setState(({ taskList }) => ({
-      taskList: taskList.map((item) => {
-        const { second: secondPrev, minute: minutePrev } = item;
-
-        if (item.onTimer === true && item.completed === false) {
-          let second = secondPrev;
-          let minute = minutePrev;
-          let completed = false;
-          let onTimer = true;
-
-          if (second === 0 && minute === 0) {
-            completed = true;
-            onTimer = false;
-          }
-          if (item.second > 0) {
-            second -= 1;
-          } else if (item.minute > 0) {
-            second = 59;
-            minute -= 1;
-          }
-
-          return { ...item, minute, second, completed, onTimer };
-        }
-
-        return item;
-      }),
-    }));
-  };
-
-  render() {
-    const { filter, taskList, filters } = this.state;
-    const visibleTask = this.filteredTasks(filter);
-
-    /* eslint no-param-reassign: 0 */
-    const activeTask = taskList.reduce((count, task) => (task.completed === false ? (count += 1) : count), 0);
-    /* eslint no-param-reassign: 0 */
-
-    return (
-      <div className='todoapp'>
-        <header className='header'>
-          <h1>todos</h1>
-          <NewTaskForm addNewTask={this.addNewTask} />
-        </header>
-        <section className='main'>
-          <TaskList
-            tasks={visibleTask}
-            deleteTask={this.deleteTask}
-            completedTask={this.completedTask}
-            editTask={this.editTask}
-            onPlayTimer={this.onPlayTimer}
-            onPauseTimer={this.onPauseTimer}
-          />
-          <Footer
-            activeTask={activeTask}
-            filters={filters}
-            onFilterSelect={this.onFilterSelect}
-            deleteCompletedTask={this.deleteCompletedTask}
-          />
-        </section>
-      </div>
+      })
     );
-  }
+  };
+
+  const onPlayTimer = (id) => {
+    toggleTimer(id, true);
+  };
+
+  const onPauseTimer = (id) => {
+    toggleTimer(id, false);
+  };
+
+  // const changeTime = () => {
+  //   setTaskList(
+  //     taskList.map((item) => {
+  //       const { second: secondPrev, minute: minutePrev } = item;
+
+  //       console.log(item.onTimer, item.completed);
+  //       if (item.onTimer === true && item.completed === false) {
+  //         let second = secondPrev;
+  //         let minute = minutePrev;
+  //         let completed = false;
+  //         let onTimer = true;
+
+  //         if (second === 0 && minute === 0) {
+  //           completed = true;
+  //           onTimer = false;
+  //         }
+  //         if (item.second > 0) {
+  //           second -= 1;
+  //         } else if (item.minute > 0) {
+  //           second = 59;
+  //           minute -= 1;
+  //         }
+
+  //         return { ...item, minute, second, completed, onTimer };
+  //       }
+
+  //       return item;
+  //     })
+  //   );
+  // };
+
+  useEffect(() => {
+    if (!timer.current) {
+      console.log(1);
+      // timer.current = true;
+      // setInterval(changeTime, 1000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const visibleTask = filteredTasks(filter);
+  /* eslint no-param-reassign: 0 */
+  const activeTask = taskList.reduce((count, task) => (task.completed === false ? (count += 1) : count), 0);
+  /* eslint no-param-reassign: 0 */
+
+  return (
+    <div className='todoapp'>
+      <header className='header'>
+        <h1>todos</h1>
+        <NewTaskForm addNewTask={addNewTask} />
+      </header>
+      <section className='main'>
+        <TaskList
+          tasks={visibleTask}
+          deleteTask={deleteTask}
+          completedTask={completedTask}
+          editTask={editTask}
+          onPlayTimer={onPlayTimer}
+          onPauseTimer={onPauseTimer}
+        />
+        <Footer
+          activeTask={activeTask}
+          filters={filters}
+          onFilterSelect={onFilterSelect}
+          deleteCompletedTask={deleteCompletedTask}
+        />
+      </section>
+    </div>
+  );
 }
 
 export default ToDo;

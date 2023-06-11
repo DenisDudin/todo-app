@@ -1,72 +1,61 @@
-import { Component } from 'react';
+import { useState } from 'react';
 // import PropTypes from 'prop-types';
 
-class NewTaskForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      inputValue: '',
-      minute: '',
-      second: '',
-    };
-  }
+function NewTaskForm(props) {
+  const [task, setTask] = useState({
+    inputValue: '',
+    minute: '',
+    second: '',
+  });
 
-  onValueChange = (e) => {
-    this.setState({
+  const onValueChange = (e) => {
+    setTask((valueTask) => ({
+      ...valueTask,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  onEditFieldKeyDown = (e) => {
-    const { addNewTask } = this.props;
+  const onEditFieldKeyDown = (e) => {
+    const { addNewTask } = props;
 
     if (e.key === 'Enter') {
-      addNewTask(this.state);
-      this.state.inputValue = '';
-      this.state.minute = '';
-      this.state.second = '';
+      addNewTask(task);
+      setTask({ inputValue: '', minute: '', second: '' });
     }
   };
 
-  render() {
-    const { inputValue, minute, second } = this.state;
-    return (
-      <form className='new-todo-form'>
-        <input
-          name='inputValue'
-          className='new-todo'
-          placeholder='Task'
-          value={inputValue}
-          onChange={this.onValueChange}
-          onKeyDown={this.onEditFieldKeyDown}
-        />
-        <input
-          name='minute'
-          className='new-todo-form__timer'
-          placeholder='Min'
-          value={minute}
-          onChange={this.onValueChange}
-          onKeyDown={this.onEditFieldKeyDown}
-        />
-        <input
-          name='second'
-          className='new-todo-form__timer'
-          placeholder='Sec'
-          value={second}
-          onChange={this.onValueChange}
-          onKeyDown={this.onEditFieldKeyDown}
-        />
-      </form>
-    );
-  }
+  return (
+    <form className='new-todo-form'>
+      <input
+        name='inputValue'
+        className='new-todo'
+        placeholder='Task'
+        value={task.inputValue}
+        onChange={onValueChange}
+        onKeyDown={onEditFieldKeyDown}
+      />
+      <input
+        name='minute'
+        className='new-todo-form__timer'
+        placeholder='Min'
+        value={task.minute}
+        onChange={onValueChange}
+        onKeyDown={onEditFieldKeyDown}
+      />
+      <input
+        name='second'
+        className='new-todo-form__timer'
+        placeholder='Sec'
+        value={task.second}
+        onChange={onValueChange}
+        onKeyDown={onEditFieldKeyDown}
+      />
+    </form>
+  );
 }
 
 NewTaskForm.defaultProps = {
   props: () => {},
 };
-
-// NewTaskForm.propTypes = {
-//   props: PropTypes.func,
-// };
 
 export default NewTaskForm;
